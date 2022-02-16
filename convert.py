@@ -3,6 +3,7 @@
 import os ,sys ,argparse ,json ,hashlib
 import logging
 # from sqlitedict import SqliteDict
+import collections
 
 from constants import *
 
@@ -1282,6 +1283,8 @@ def generate_output(nodes ,fh ,fp):
     """
     f = open( fp ,'a+' )
 
+    last_two_action_object = collections.deque( maxlen=2 )
+
     for line in fh:
         if input_format == 'avro':
             raise NotImplementedError( 'CDM avro format is not supported as of 01-04-09.' )
@@ -1338,10 +1341,16 @@ def generate_output(nodes ,fh ,fp):
             # f.write( str( srcNode['nid'] ) + '\t' + str(
             #     dstNode['nid'] ) + '\t' + srcNodeLabel + ":" + dstNodeLabel + ":" + labelgen( values ) + ":" + str(
             #     values['timestamp'] ) + "\t" + "\n" )
-
             if str( cdm_record_value['predicateObjectPath'] ) != "None":
-                f.write( str( cdm_record_value['subject'] ) + '\t' +
-                    str( cdm_record_value['type'] ) + '\t' + str( cdm_record_value['predicateObjectPath'] )  + "\t" + "\n")
+                if "unknown" not in str( cdm_record_value['predicateObjectPath'] ):
+                    new_line = str( cdm_record_value['subject'] ) + '\t' \
+                               + str( cdm_record_value['type'] ) + '\t' \
+                               + str( cdm_record_value['predicateObjectPath'] )  + "\t" + "\n"
+                    new_action_object = str( cdm_record_value['type'] ) + '\t' \
+                                        + str( cdm_record_value['predicateObjectPath'] )  + "\t" + "\n"
+                    if new_action_object not in list(last_two_action_object):
+                        f.write(new_line)
+                    last_two_action_object.append(new_action_object)
 
             # if values['bidirectional']:
             #     f.write( str( dstNode['nid'] ) + '\t' + str(
