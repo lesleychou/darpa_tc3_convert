@@ -64,13 +64,13 @@ def read_field(object ,format):
         raise NotImplementedError( 'Unknown format as of 01-04-09.' )
 
 
-def idgen(hashstr):
-    """Generate UID for vertices.
-
-    """
-    hasher = hashlib.md5()
-    hasher.update( hashstr )
-    return long( hasher.hexdigest()[:16] ,32 )
+# def idgen(hashstr):
+#     """Generate UID for vertices.
+#
+#     """
+#     hasher = hashlib.md5()
+#     hasher.update( hashstr )
+#     return long( hasher.hexdigest()[:16] ,32 )
 
 
 def labelgen(values):
@@ -1343,9 +1343,11 @@ def generate_output(nodes ,fh ,fp):
             #     values['timestamp'] ) + "\t" + "\n" )
             if str( cdm_record_value['predicateObjectPath'] ) != "None":
                 if "unknown" not in str( cdm_record_value['predicateObjectPath'] ):
-                    new_line = str( cdm_record_value['subject'] ) + '\t' \
+                    new_line = str( values['srcUUID'] ) + '\t' \
+                               + str( values['dstUUID'] ) + '\t' \
                                + str( cdm_record_value['type'] ) + '\t' \
-                               + str( cdm_record_value['predicateObjectPath'] )  + "\t" + "\n"
+                               + str( cdm_record_value['predicateObjectPath'] )  + "\t" \
+                               + str( cdm_record_value['timestampNanos'] ) + "\n"
                     new_action_object = str( cdm_record_value['type'] ) + '\t' \
                                         + str( cdm_record_value['predicateObjectPath'] )  + "\t" + "\n"
                     if new_action_object not in list(last_two_action_object):

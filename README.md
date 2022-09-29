@@ -8,6 +8,6 @@ Transfer darpa TC3 json data into ATLAS input format ("Subject Type Object")
 
 4. Run script example:
 ```
-python convert.py --source="data/" --system="cadets" --format="json" --save="cadet-results"
+python convert.py --source="data/cadets-official-all/" --system="cadets" --format="json" --save="cadet-results"
 ```
 
